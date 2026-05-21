@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Galaxy with Zoom Effect</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Quicksand:wght@500;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
   <script type="importmap">
     {
       "imports": {
@@ -19,22 +20,93 @@
     #player {
       display: none;
     }
-    #musicButton {
+
+    /* Love Message Styling */
+    #loveText {
       position: fixed;
       top: 20px;
-      right: 20px;
-      padding: 12px 20px;
-      background-color: #ffffff10;
-      color: white;
-      border: 1px solid white;
-      border-radius: 8px;
-      cursor: pointer;
+      left: 20px;
+      padding: 12px 24px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #ff006e;
+      border: 1.5px solid rgba(255, 0, 110, 0.7);
+      border-radius: 50px;
       z-index: 9999;
-      font-weight: bold;
-      backdrop-filter: blur(5px);
+      font-weight: 700;
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+      backdrop-filter: blur(15px);
+      box-shadow: 0 8px 32px rgba(255, 0, 110, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+      animation: float 3s ease-in-out infinite;
     }
-    #musicButton:hover {
-      background-color: #ffffff30;
+
+    #loveText:hover {
+      background: rgba(255, 0, 110, 0.15);
+      box-shadow: 0 12px 48px rgba(255, 0, 110, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+      border-color: rgba(255, 0, 110, 0.9);
+    }
+
+    /* Happy Birthday Text Styling */
+    #birthdayText {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #b800ff;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 12px 24px;
+      border-radius: 50px;
+      z-index: 9998;
+      box-shadow: 0 8px 32px rgba(184, 0, 255, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(15px);
+      border: 1.5px solid rgba(184, 0, 255, 0.7);
+      animation: float 3s ease-in-out infinite;
+      letter-spacing: 0.5px;
+      text-shadow: 0 4px 15px rgba(184, 0, 255, 0.5);
+      transition: all 0.3s ease;
+    }
+
+    #birthdayText:hover {
+      background: rgba(184, 0, 255, 0.25);
+      box-shadow: 0 12px 48px rgba(184, 0, 255, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+      border-color: rgba(184, 0, 255, 0.95);
+      text-shadow: 0 4px 20px rgba(184, 0, 255, 0.8);
+    }
+    
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.8;
+      }
+    }
+
+    .emoji-bounce {
+      display: inline-block;
+      animation: bounce 0.8s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-5px);
+      }
     }
   </style>
 </head>
@@ -53,49 +125,36 @@
 
   <div id="dark-overlay"></div>
   <div id="info"></div>
-<h1 style="position: fixed; bottom: 10px; right: 10px; font-size: 18px; font-family: Arial, sans-serif; color: white; background: rgba(0, 0, 0, 0.4); padding: 6px 12px; border-radius: 8px; z-index: 9999;">
-  Happy Birthday to My Universe! 🎉
-</h1>
-  <audio id="audioPlayer" autoplay muted loop>
-    <source src="musik/lagu.mp3" type="audio/mpeg">
+  
+  <div id="birthdayText">
+    happy birthday to my universe! ✨
+  </div>
+
+  <audio id="audioPlayer" autoplay loop playsinline>
+    <source src="../musik/lagu.mp3" type="audio/mpeg">
   </audio>
-  <button id="musicButton">Pause Musik ⏸️</button>
+  <div id="loveText">i loveee you 🤍</div>
   <script>
     const audioPlayer = document.getElementById('audioPlayer');
-    const musicButton = document.getElementById('musicButton');
-    let isPlaying = false;
 
-    // Auto-play musik saat halaman siap dengan unmute
+    // Auto-play musik saat halaman siap
     window.addEventListener('load', () => {
-      audioPlayer.muted = false;
       audioPlayer.play().catch((error) => {
         console.log('Auto-play error:', error);
       });
-      isPlaying = true;
     });
+
+    // Fallback: start music setelah delay kecil
+    setTimeout(() => {
+      audioPlayer.play().catch((error) => {
+        console.log('Auto-play error:', error);
+      });
+    }, 500);
 
     // Jika auto-play masih terblokir, play saat user interaksi pertama
     document.addEventListener('click', () => {
-      if (!isPlaying) {
-        audioPlayer.muted = false;
-        audioPlayer.play();
-        isPlaying = true;
-      }
+      audioPlayer.play();
     }, { once: true });
-
-    // Kontrol play/pause dengan tombol
-    musicButton.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (isPlaying) {
-        audioPlayer.pause();
-        musicButton.innerText = "Mainkan Musik 🎵";
-        isPlaying = false;
-      } else {
-        audioPlayer.play();
-        musicButton.innerText = "Pause Musik ⏸️";
-        isPlaying = true;
-      }
-    });
   </script>
 
   <script type="module" src="script.js"></script>
